@@ -1,0 +1,15 @@
+/dump
+/trace
+/logfile
+/shutdown
+/mappings
+/env
+/actuator/env
+/restart
+/refresh
+/headpump
+/jolokia
+/jolokia/list
+/health
+/beans
+/info

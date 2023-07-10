@@ -1,0 +1,1 @@
+javascript:(function(){$(function(){$("body *").each(function(){$(this).removeAttr("style"),$(this).removeClass("hidden")})})})()

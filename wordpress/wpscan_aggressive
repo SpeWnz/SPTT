@@ -1,0 +1,6 @@
+#!/bin/sh
+TARGET=$1
+API_TOKEN=$2
+
+wpscan --detection-mode aggressive -e u,vp,vt,dbe,m,tt --max-threads 1 --url "$TARGET" --api-token $API_TOKEN --disable-tls-checks --random-user-agent
+
