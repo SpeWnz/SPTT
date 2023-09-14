@@ -97,4 +97,4 @@ for line in fileLines:
 
 
 
-fm.listToFile(csvLines,'output.csv',mode='w')
+fm.listToFile(csvLines,args.o,mode='w')
