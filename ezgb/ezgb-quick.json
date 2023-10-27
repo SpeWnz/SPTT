@@ -1,0 +1,8 @@
+{
+    "gobuster-mode":"dir",
+    "threads":4,
+    "wordlist":"QUICK-WORDLIST-HERE",
+    "random-agent":true,
+    "timeout":1,
+    "delay":0.5
+}
