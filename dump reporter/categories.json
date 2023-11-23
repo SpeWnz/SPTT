@@ -1,0 +1,9 @@
+{
+    "Active Directory":["mkey","ldb","keytab"],
+    "Databases":["db","dbf"],
+    "Configuration files":["conf","cfg","yml","yaml","config","json","ini"],
+    "Text":["txt"],
+    "Keystores":["jks","keystore"],
+    "Certificates":["cer","crt","der","key","p12","p7b","pem","pfx","pkcs12"],
+    "Scripts":["sh","groovy","py","bat","ps1","cmd","rb","ruby","js","css"]
+}
