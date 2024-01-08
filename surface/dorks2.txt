@@ -1,0 +1,176 @@
+"§§§" inurl:login/login-user
+"§§§" "index of" "cloudapp.azure.com" 
+"§§§" "index of" "cloudapp.net" 
+intext:§§§ ext:doc
+intext:§§§ ext:docx
+intext:§§§ ext:pdf
+intext:§§§ ext:ppt
+intext:§§§ ext:pptx
+intext:§§§ ext:txt
+intext:§§§ inurl:admin
+intext:§§§ inurl:admin.php
+intext:§§§ inurl:login
+intext:§§§ inurl:login.php
+"§§§" intitle:"index of" "about-me" 
+"§§§" intitle:"index of" "login"
+"§§§" intitle:"index of" "*.phtml" 
+site:§§§ admin panel and open server misconfigure 
+site:§§§ allintext:static/uploads 
+site:§§§ allintitle:"ASPECT Control Panel"
+site:§§§ allintitle:"Building Operation WebStation"
+site:§§§ allintitle:"Cyberoam SSL VPN Portal"
+site:§§§ allintitle:"Eclypse Login"
+site:§§§ allintitle:"eSlideManager - Login"
+site:§§§ allintitle:"OMERO.web - Login"
+site:§§§ allintitle:"ProjectDox Login"
+site:§§§ allintitle: "smart office suite - login page" 
+site:§§§ allintitle:"Supermicro BMC Login"
+site:§§§ allintitle:"TutorTrac Login"
+site:§§§ allintitle:"Untangle Administrator Login"
+site:§§§ allintitle:"wireless controller login"
+site:§§§ AND inurl:home/default.aspx
+site:github.com intext:§§§
+site:§§§ Index:Index of /wp-admin
+site:§§§ index of: /aadhar 
+site:§§§ index of:admin.asp
+site:§§§ index of /wp-admin.jpg
+site:§§§ initial:inurl:uux.aspx 
+site:§§§ intext:"index of" "backuop/*.sql"
+site:§§§ intext:"index of" "config"
+site:§§§ intext:"index of" ".git"
+site:§§§ intext:"index of" "phpinfo"
+site:§§§ intext:"index of" "phpMyAdmin"
+site:§§§ intext:"index of" smb.conf
+site:§§§ intext:"index of" ".sql"
+site:§§§ intext:"index of wp-content/uploads" 
+site:§§§ intext:"index of" "wp-content.zip"
+site:§§§ intext:"index of" "xmlrpc.php"
+site:§§§ intext:"Login" inurl:/secure 
+site:§§§ intext:phpMiniAdmin inurl:phpminiadmin ext:php
+site:§§§ intext:"Powered by Virtual Airlines Manager [v2.6.2]"
+site:§§§ intitle:BioTime AND intext:ZKTeco Security LLC
+site:§§§ intitle:"cs141 webmanager" 
+site:§§§ intitle:"Documentation Index" intext:"Apache Tomcat Servlet" inurl:"docs" 
+site:§§§ intitle:"Error log for /LM/".edu 
+site:§§§ intitle:"Ignition Gateway" "launch designer"
+site:§§§ intitle:"IIS Windows Server"
+site:§§§ intitle:"index of"
+site:§§§ intitle:"Index of /api/" 
+site:§§§ intitle:"Index of /app/webroot/img" 
+site:§§§ intitle:"index of" "backup.zip" 
+site:§§§ intitle:"Index of /bank/" 
+site:§§§ intitle:"Index of /biuro" 
+site:§§§ intitle:"index of" "bugs.txt" 
+site:§§§ intitle:"Index of /cam/"
+site:§§§ intitle:"index of" "/config/prod/" 
+site:§§§ intitle:"index of" "config.txt" 
+site:§§§ intitle:"index of" "configuration.txt" 
+site:§§§ intitle:"index of" "creds.txt" 
+site:§§§ intitle:"index of"/csb 
+site:§§§ intitle:"index of" "C:Windows" 
+site:§§§ intitle:"index of /database/migrations"
+site:§§§ intitle:"Index of /databases" 
+site:§§§ intitle:"index of" "domain.txt" 
+site:§§§ intitle:"index of" ec2 -aws 
+site:§§§ intitle:"index of" /etc/shadow
+site:§§§ intitle:"Index of /flipbook" 
+site:§§§ intitle:"index of" graphql-api 
+site:§§§ intitle:"index of" intext:"Apache/1.4"
+site:§§§ intitle:"index of" intext:"Apache/2.2.3"
+site:§§§ intitle:"index of /" intext:".db
+site:§§§ intitle:index.of intext:log
+site:§§§ intitle:"index of" intext: "login.php" 
+site:§§§ intitle:index.of intext:log inurl:nasa
+site:§§§ intitle:"index of" intext:user inurl:data
+site:§§§ intitle:"index of" inurl:admin/login
+site:§§§ intitle:"Index of" inurl:/backup/ "wp-config" 
+site:§§§ intitle:"index of" inurl:SUID
+site:§§§ intitle:"index of" inurl:superadmin
+site:§§§ intitle:"index of" inurl:wp-json index.json
+site:§§§ intitle:index.of login.js 
+site:§§§ intitle:"index of" "login.php.txt" 
+site:§§§ intitle:"index of" "login.sh"
+site:§§§ intitle:"Index of /_MACOSX" 
+site:§§§ intitle:index of "main.js" 
+site:§§§ intitle:"index of" /mobikwike 
+site:§§§ intitle:"Index of /node" 
+site:§§§ intitle:"Index of /node_modules/" 
+site:§§§ intitle:"index of" "npm-debug.log" 
+site:§§§ intitle:"index of" "pass.txt" 
+site:§§§ intitle:"index of" "plesk-stat" 
+site:§§§ intitle:"index of" "postman_collection.json" 
+site:§§§ intitle:"index of"/sbi 
+site:§§§ intitle: index of /secrets/
+site:§§§ intitle:"index of" ".sql" 
+site:§§§ intitle:"index of" ".ssh" OR "ssh_config" OR "ssh_known_hosts" OR "authorized_keys" OR "id_rsa" OR "id_dsa" 
+site:§§§ intitle:"index of" "/userlist/" 
+site:§§§ intitle:"index of" "username.txt" 
+site:§§§ intitle:"Index of /vendor/guzzlehttp" 
+site:§§§ intitle:index of "wc.db"
+site:§§§ intitle:"Index of /webcam/"
+site:§§§  intitle:index of /wp-admin 
+site:§§§ intitle:"index of /wp-admin"
+site:§§§ intitle:index of /wp-admin 
+site:§§§ intitle:"index of /wp-content/plugins" 
+site:§§§ intitle:"Index of /wp-includes/sitemaps" 
+site:§§§ intitle:"login"
+site:§§§ intitle:"Login - Jorani" 
+site:§§§ intitle:"NB1601 Web Manager"
+site:§§§ intitle:"Netgate pfSense Plus - Login"
+site:§§§ intitle:"online portal login" 
+site:§§§ intitle:"Oracle WebLogic Server"
+site:§§§ intitle:"Parallels User Portal"
+site:§§§ intitle:phaser inurl:/frameprop.htm
+site:§§§ intitle:"Toshiba Network Camera"
+site:§§§ intitle:"Unibox Administration" 
+site:§§§ intitle:"WAMPSERVER Homepage"
+site:§§§ intitle:"Webcam" inurl:WebCam.htm 
+site:§§§ inurl:"/adfs/ls/"
+site:§§§ inurl:/admin.aspx 
+site:§§§ inurl: administrator/components
+site:§§§ inurl: administrator/components/com_admin/sql/updates/mysql/
+site:§§§ inurl: administrator/components/com_admin/sql/updates/sqlazure
+site:§§§ inurl:"adminLogin/" intitle:"Admin Panel" 
+site:§§§ inurl:/admin.php 
+site:§§§ inurl:assystnetmob
+site:§§§ inurl:authorization.do intext:"ADSelfService Plus"
+site:§§§ inurl:backup filetype:sql
+site:§§§ inurl:"/bitrix/redirect.php?goto=" 
+site:§§§ inurl:"cf/assets" "MultiFileUpload.swf" 
+site:§§§ inurl:"/cgi-bin/home.ha"  
+site:§§§ inurl:"/database.json" 
+site:§§§ inurl: /default.rdp 
+site:§§§ inurl:"device.rsp" -com
+site:§§§ inurl:"device.rsp" -in
+site:§§§ inurl:GeminiVAIdServer
+site:§§§ inurl:"/geoserver/ows?service=wfs" 
+site:§§§ inurl: "index of" "phpstan.neon" 
+site:§§§ inurl index.php id= site.bd
+site:§§§ inurl: json beautifier online
+site:§§§ inurl:/login.aspx
+site:§§§ inurl:/login.aspx 
+site:§§§ inurl:login | inurl:logon | inurl:sign-in | inurl:signin | inurl:portal 
+site:§§§ inurl:login/login-user 
+site:§§§ inurl:"login.php" 
+site:§§§ inurl:"/login.php" intitle:"admin" 
+site:§§§ inurl:php?id=1
+site:§§§ inurl:/phpMyAdmin/index.php?server=1 
+site:§§§ inurl:/restgui/start.html 
+site:§§§ inurl:robots filetype:txt
+site:§§§ inurl:/signup.aspx 
+site:§§§ inurl:"/spotfire/login.html" 
+site:§§§ inurl:ssh intitle:"index of /files"
+site:§§§ inurl:tech "login" 
+site:§§§ inurl:/ui/login.aspx 
+site:§§§ inurl:uux.aspx 
+site:§§§ inurl:wp-config.txt intext:mysql 
+site:§§§ inurl: wp-content/plugin/404-redirection-manager
+site:§§§ inurl: wp-content/plugin/8-degree-notification-bar
+site:§§§ inurl:"/wp-content/plugins/imagemagick-engine/"
+site:§§§ inurl:wp-includes 
+site:linkedin.com intitle:"@§§§" 
+site:pastebin.com intext:§§§
+site:§§§ "-- phpMyAdmin SQL Dump" ext:txt 
+site:www.openbugbounty.org intext:§§§ intext:"Unpatched" 
+site:§§§ zoom+meeting+passcode 
+"§§§" "structure" + ext:sql 
