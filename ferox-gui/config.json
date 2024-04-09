@@ -1,0 +1,21 @@
+{
+    "wordlists":[
+        {
+            "label":"directory-list-lowercase-2.3-small",
+            "path":"PATH HERE"
+        },
+        {
+            "label":"directory-list-2.3-big",
+            "path":"PATH HERE"
+        },
+        {
+            "label":"REST api all",
+            "path":"PATH HERE"
+        },
+        {
+            "label":"SOAP api all",
+            "path":"PATH HERE"
+        }
+    ],
+    "outputFolder":"PATH HERE"
+}

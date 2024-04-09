@@ -287,6 +287,12 @@ if __name__ == '__main__':
     jsonFileManager.SAVE_FILE_PATH = args.i
     jsonFileManager.loadFile()
 
+   # should we reset the whole file or just the wip? 
+    if RESET:
+        jsonFileManager.resetALL()
+    else:
+        jsonFileManager.resetWIP()
+
     # is there actually work to do?
     if jsonFileManager.jobAvailable():
         pass
@@ -297,10 +303,7 @@ if __name__ == '__main__':
     if NO_OUT == False:         
         os.system('mkdir ' + OUTPUT_FOLDER)
 
-    if RESET:
-        jsonFileManager.resetALL()
-    else:
-        jsonFileManager.resetWIP()
+    
 
     PROGRESS = jsonFileManager.getTodoAmount()
     TOTAL = jsonFileManager.getTotalAmount()

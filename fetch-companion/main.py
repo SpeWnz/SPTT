@@ -24,6 +24,15 @@ def dorkFiles():
     
     return "OK"
 
+# used for dorkFiles.js
+@app.route('/dorkHREFs', methods=['POST'])
+def dorkHREFs():
+    data = request.get_json()
+    
+    fm.listToFile(data['data'],"dorkHREFs.txt",'a')    
+    
+    return "OK"
+
 # method used by clients to submit their performance
 @app.route('/endpoint', methods=['POST'])
 def endpoint():

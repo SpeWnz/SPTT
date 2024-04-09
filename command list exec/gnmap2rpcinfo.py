@@ -18,10 +18,6 @@ if __name__ == '__main__':
     for item in targets:
 
         # BUILD COMMAND HERE
-
-        # example command:
-        # rmg scan IP
-        # rmg enum IP PORT
         
         # scan
         com ='rpcinfo {}'.format(item['ip'])
