@@ -1,0 +1,11 @@
+{
+    "our-ip":"OUR IP HERE",
+    "our-port":"OUR PORT HERE",
+    "rmg-executable-location":"RMG JAR PATH HERE",
+    "java-executables":[
+        "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
+        "/usr/lib/jvm/java-17-openjdk-amd64/bin/java"
+    ],
+    "ysoserial-path":"YSOSERIAL JAR HERE",
+    "ysoserial-gadgets":"ysoserial-gadgets.txt"
+}
