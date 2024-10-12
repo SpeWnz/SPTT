@@ -1,0 +1,29 @@
+test the script on docker instances:
+
+
+Mongo DB:
+docker pull mongo
+docker run --name mongo-db -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=example mongo --bind_ip_all
+
+
+PostgreSQL:
+docker pull postgres
+docker run --name postgres-container -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=example -e POSTGRES_DB=your_database -p 5432:5432 -d postgres
+
+
+MySQL:
+docker pull mysql:latest
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=example -e MYSQL_DATABASE=your_database -p 3306:3306 -d mysql:latest
+
+
+Microsoft SQL (note, mssql requires a strong password or the docker image wont start):
+docker pull mcr.microsoft.com/mssql/server
+docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=example-P4ssw0rd' -p 1433:1433 --name -d sql_server mcr.microsoft.com/mssql/server
+
+for ms-sql, the obdc driver will need to be installed. The microsoft documentation can be found here: https://learn.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver16&tabs=debian18-install%2Calpine17-install%2Cdebian8-install%2Credhat7-13-install%2Crhel7-offline
+
+1. curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
+2. curl https://packages.microsoft.com/config/debian/12/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+3. sudo apt-get update -y
+4. sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+5. sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18
