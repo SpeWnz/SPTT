@@ -1,0 +1,9 @@
+docker pull jenkins/jenkins:lts
+
+docker run --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+
+
+initialize the first credentials:
+docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+
+def sout = new StringBuilder(), serr = new StringBuilder();def proc = 'ls'.execute();proc.consumeProcessOutput(sout, serr);proc.waitForOrKill(1000);println("out> $sout\nerr> $serr")

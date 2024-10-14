@@ -1,0 +1,13 @@
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://localhost:8080/
+Origin: http://localhost:8080
+DNT: 1
+Connection: keep-alive
+Cookie: JSESSIONID.9ef58553=node0a3tz5o664y0br502jawszja91.node0; screenResolution=1920x1080; JSESSIONID.2cc2cc81=node01rkbr7k4bxtoj1lx677bkhhx631.node0; JSESSIONID.0412153a=node0tfiqf8lim5fg1x5cg1pj1f0be3.node0
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+Content-Length: 0
