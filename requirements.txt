@@ -1,12 +1,13 @@
 bs4
 argparse
-base64
-json
 pyautogui
 pyperclip
-re
 requests
-shutil
 ssl
 jsonbeautifier
 glob
+segno
+pyzbar
+pypng
+pyqrcode
+image
