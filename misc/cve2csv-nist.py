@@ -15,7 +15,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # ===========================================================================================================================
 
-parser = argparse.ArgumentParser(description="CVE2CSV - Converts a list of CVEs to a nice CSV file (v140923)")
+parser = argparse.ArgumentParser(description="CVE2CSV - Converts a list of CVEs to a nice CSV file (v200325)")
 REQUIRED_ARGUMENTS = parser.add_argument_group("Necessary arguments")
 OPTIONAL_ARGUMENTS = parser.add_argument_group("Optional arguments")
 
@@ -32,6 +32,8 @@ np.DEBUG = ("--debug" in sys.argv)
 
 # ===========================================================================================================================
 
+PROXIES = None
+
 fileLines = fm.fileToSimpleList(args.i)
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
 SLEEP_TIME = 0.5
@@ -44,32 +46,14 @@ def getData(cveID: str):
     HEADERS = {
         'User-Agent':USER_AGENT
     }
-    r = requests.get(url=URL,headers=HEADERS,verify=False)
-
-    soup = BeautifulSoup(r.text,'lxml')
+    r = requests.get(url=URL,headers=HEADERS,verify=False,proxies=PROXIES)
+   
 
     # default values
     severityValues_3 = ["N/A","N/A"]
     vector_3 = "N/A"
     severityValues_2 = ["N/A","N/A"]
     vector_2 = "N/A"
-
-    #CVSS 3
-    try:
-        severity_3 = soup.find('a',{'id':'Cvss3NistCalculatorAnchor'}).text
-        vector_3 = soup.find('span',{'class':'tooltipCvss3NistMetrics'}).text
-        severityValues_3 = severity_3.split(' ')
-    except:
-        np.debugPrint("No values for CVSS3")
-
-    #CVSS 2
-    try:
-        severity_2 = soup.find('a',{'id':'Cvss2CalculatorAnchor'}).text
-        vector_2 = soup.find('span',{'class':'tooltipCvss2NistMetrics'}).text
-        severityValues_2 = severity_2.split(' ')
-    except:
-        np.debugPrint("No values for CVSS2")
-
 
     return severityValues_3,vector_3,severityValues_2,vector_2
 
