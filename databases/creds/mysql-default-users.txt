@@ -1,0 +1,7 @@
+admin@example.com
+root
+superdba
+mysqladmin
+admin
+scrutinizer
+scrutremote

@@ -21,7 +21,7 @@ np.DEBUG = ('--debug' in sys.argv)
 
 if __name__ == '__main__':        
 
-    textContent = open(args.i,'r').read()
+    textContent = open(args.i,'r',encoding='utf-8').read()
     outputFile = tsu.getTimeStamp_iso8601() + ".png"
 
     qrcode = segno.make_qr(textContent)
