@@ -10,6 +10,8 @@ NOTE: the usage of this script assumes the following
 '''
 import ZHOR_Modules.nicePrints as np
 import ZHOR_Modules.jsonUtils as jsu
+import ZHOR_Modules.fileManager as fm
+import ZHOR_Modules.osUtils as osu
 import readline
 import os
 
@@ -18,6 +20,7 @@ def getOutputFileName(inputStr: str):
 
 
 CONFIG = jsu.loadConfig()
+HEADERS = fm.fileToSimpleList('headers.txt')
 
 wordlistIndex = None
 targetURL = None
@@ -43,4 +46,10 @@ com = 'feroxbuster -w "{}" --url "{}" -o "{}/{}"'.format(
     outputFile
 )
 
+# append headers, if there are any
+if len(HEADERS) > 0:
+    for h in HEADERS:
+        com += f"-H '{h}' "
+
+osu.pressEnterToContinue()
 os.system(com)
