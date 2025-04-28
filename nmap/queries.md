@@ -31,7 +31,7 @@ select DISTINCT hosts.target_group
 from hosts
 ```
 
-### For each host, list all open ports
+### For each host, list all open ports separated by comma
 
 ```
 SELECT DISTINCT h.ip AS host, 
@@ -41,6 +41,15 @@ JOIN ports p ON h.id = p.host_id
 WHERE p.state = 'open'
 GROUP BY h.id;
 ```
+
+### List all open ports
+
+```
+select DISTINCT ports.port
+from ports
+where ports.state is 'open'
+```
+
 
 ### Hosts with only 1 open port
 
