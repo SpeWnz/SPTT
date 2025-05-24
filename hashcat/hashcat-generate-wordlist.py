@@ -18,6 +18,9 @@ REQUIRED_ARGUMENTS.add_argument('-w',metavar='"WORDLIST"',type=str,required=True
 REQUIRED_ARGUMENTS.add_argument('-o',metavar='"OUTPUT FILE"',type=str,required=True,help='Output file')
 
 # Argomenti opzionali
+OPTIONAL_ARGUMENTS.add_argument('-stf',type=str,required=True,help="Sort Temp Folder (temporary folder used by the sort utility. By default is in /tmp. For very large wordlists it is recommended to select another path)")
+OPTIONAL_ARGUMENTS.add_argument('-P2',action="store_true",help="Add 2-Permutation words to pre-elaborated wordlist")
+OPTIONAL_ARGUMENTS.add_argument('-P3',action="store_true",help="Add 3-Permutation words to pre-elaborated wordlist")
 OPTIONAL_ARGUMENTS.add_argument('--debug',action="store_true",help="Debug mode")
 
 args = parser.parse_args()
@@ -27,6 +30,7 @@ np.DEBUG = ('--debug' in sys.argv)
 # ==================================================================================================================================
 
 TEMP_LIST_NAME = "__temp"
+TEMP_SORT_FOLDER = "/tmp"
 
 def generatePermutations(input_list, n, allow_repeats=True):
     if allow_repeats:
@@ -47,7 +51,12 @@ def generateInputList(inputListPath: str):
     outputList = lu.removeDuplicates(outputList)
 
     # at this point the list contains all words plus all "2-permutations" and "3-permutations"
-    outputList += generatePermutations(outputList,2,False) + generatePermutations(outputList,3,False)
+    
+    if '-P2' in sys.argv:
+        outputList += generatePermutations(outputList,2,False)
+    
+    if '-P3' in sys.argv:
+        outputList += generatePermutations(outputList,3,False)
 
     fm.listToFile(outputList,TEMP_LIST_NAME) 
     
@@ -55,19 +64,24 @@ def generateInputList(inputListPath: str):
 # idea from: https://infinitelogins.com/2020/11/16/using-hashcat-rules-to-create-custom-wordlists/
 # hashcat --force <wordlist> -r append_exclamation.rule -r /usr/share/hashcat/rules/best64.rule --stdout | sort -u > hashcat_words.txt
 if __name__ == '__main__':
+
     res, _ = osu.commandResult("which hashcat")
 
     if res == '':
         np.errorPrint("Hashcat was not found.")
         exit()
 
+    if '-stf' in sys.argv:
+        TEMP_SORT_FOLDER = args.stf
+
     np.infoPrint("Genrating pre-elaborated wordlist to feed into hashcat...")
     generateInputList(args.w)
     #input("asd")
     
-    com = 'hashcat --force "{}" -r "{}" --stdout | sort -u > "{}"'.format(
+    com = 'hashcat --force "{}" -r "{}" --stdout | sort -u -T "{}" > "{}"'.format(
         TEMP_LIST_NAME,
         args.r,
+        TEMP_SORT_FOLDER,
         args.o
     )
     np.debugPrint(com)

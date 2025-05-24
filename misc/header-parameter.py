@@ -14,4 +14,4 @@ headers = requ.requestFile2Headers(sys.argv[1])
 prefix = sys.argv[2]
 
 for item in headers:
-    print(f'{prefix} "{item}: {headers[item]}"',sep=' ',end=' ')
+    print(f"{prefix} '{item}: {headers[item]}'",sep=' ',end=' ')

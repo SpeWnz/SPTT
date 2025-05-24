@@ -1,0 +1,13 @@
+password
+token
+secret
+oauth
+hash
+salt
+passwd
+private key
+jenkins
+aws
+azure
+root
+admin

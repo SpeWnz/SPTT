@@ -49,7 +49,10 @@ com = 'feroxbuster -w "{}" --url "{}" -o "{}/{}"'.format(
 # append headers, if there are any
 if len(HEADERS) > 0:
     for h in HEADERS:
-        com += f"-H '{h}' "
+        com += f" -H '{h}'"
 
+print("Please review the command before proceeding\n\n")
+print(com)
+print("\n")
 osu.pressEnterToContinue()
 os.system(com)

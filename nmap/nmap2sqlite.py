@@ -14,6 +14,7 @@ use with Grafana Dashboard - https://hackertarget.com/nmap-dashboard-with-grafan
 
 from datetime import datetime
 import argparse
+import sys
 import sqlite3
 import xml.etree.ElementTree as ET
 import ZHOR_Modules.nicePrints as np
