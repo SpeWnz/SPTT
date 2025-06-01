@@ -1,0 +1,7 @@
+
+dump digger/logs/*
+dump digger/outputs/*
+basic-auth/logs/*
+basic-auth/cache/*
+databases/logs/*
+databases/cache/*

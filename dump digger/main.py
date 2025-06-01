@@ -115,7 +115,7 @@ def performanceThread_targetFunction():
 
 # get "interesting files based on their extension"
 def getInterestingFiles(dump_path: str):
-    _dict = json.load(open('categories.json','r'))
+    _dict = json.load(open('core/categories.json','r'))
 
     for key in _dict:
         # example

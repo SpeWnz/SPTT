@@ -1,10 +1,11 @@
 {
     "Active Directory":["mkey","ldb","mdb","keytab"],
-    "Databases":["db","dbf","sql","sqbpro"],
+    "Databases":["db","dbf","sql","sqbpro","mdf","ldf"],
     "Configuration files":["conf","cfg","yml","yaml","config","json","ini","properties","props","service"],
     "Networking files":["nmconnection","ovpn"],
     "Text":["txt"],
     "Keystores":["jks","keystore"],
     "Certificates":["cer","crt","der","key","p12","p7b","pem","pfx","pkcs12"],
-    "Scripts":["sh","groovy","py","bat","ps1","cmd","rb","ruby","js","css"]
+    "Scripts":["sh","groovy","py","bat","ps1","cmd","rb","ruby","js","css"],
+    "Java files":["java","jar","class"]
 }
