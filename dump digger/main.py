@@ -25,14 +25,14 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
-__VERSION = "18052025"
+__VERSION = "250625"
 
 parser = argparse.ArgumentParser(description="Dump Digger - dig for sensitive info in a dump - v" + __VERSION)
 REQUIRED_ARGUMENTS = parser.add_argument_group("Required Arguments")
 OPTIONAL_ARGUMENTS = parser.add_argument_group("Optional Arguments")
 
 # Argomenti necessari
-REQUIRED_ARGUMENTS.add_argument('-f',metavar='"FOLDER"',type=str,required=True,help='Absolute path of the dump folder')
+REQUIRED_ARGUMENTS.add_argument('-f',metavar='"FILES/FOLDER"',type=str,required=True,help='List of files to analyze, or absolute path of the dump folder.')
 REQUIRED_ARGUMENTS.add_argument('-t',metavar='"THREADS"',type=int,required=True,help='Number of threads')
 REQUIRED_ARGUMENTS.add_argument('-o',metavar='"OUTPUT"',type=str,required=True,help='Output DB path')
 
@@ -74,21 +74,20 @@ def thread_targetFunction(filesSublist: list, threadID: int):
     global TOTAL
     global PROGRESS_COUNTER
 
-    ThreadManager.threadMessage_info(threadID,"Thread avviato")
+    ThreadManager.threadMessage_info(threadID,"Thread started")
 
     for f in filesSublist:
         try:
             TextContentManager.analyzeFile(threadID,f)
-        except:
-            msg = "Eccezione in analyzeFile: {} - File: {}".format(traceback.format_exc(),f)
-            ThreadManager.logu.logError(message=msg,fileName=ThreadManager.LOG_PATH)
+        except Exception as e:
+            ThreadManager.logu.logException(traceback,e,fileName=ThreadManager.LOG_PATH)
 
         PROGRESS_LOCK.acquire()
         PROGRESS_COUNTER += 1
         PROGRESS_LOCK.release()
 
 
-    ThreadManager.threadMessage_info(threadID,"Thread terminato")
+    ThreadManager.threadMessage_info(threadID,"Thread job done")
 
 def performanceThread_targetFunction():
     global TOTAL
@@ -112,25 +111,6 @@ def performanceThread_targetFunction():
         else:
             time.sleep(sleepTime)
 
-
-# get "interesting files based on their extension"
-def getInterestingFiles(dump_path: str):
-    _dict = json.load(open('core/categories.json','r'))
-
-    for key in _dict:
-        # example
-        # find /path/ -type f -iname "*.key"
-        for extension in _dict[key]:
-            com = ['find',dump_path, "-type", "f","-iname",f"*.{extension}"]
-            #print(com)
-            stdout, stderr = osu.commandResult(com)
-
-            _files = stdout.split("\n")
-
-            for item in _files:
-                if len(item) > 0:
-                    DatabaseManager.insert_interestingFile(item,key,extension)
-
 # gets all the files in that dump folder using linux utils
 def getFilesList(dump_path: str):
     com = ['find',dump_path, "-type", "f"]
@@ -143,25 +123,27 @@ def getFilesList(dump_path: str):
 
 if __name__ == '__main__':
 
-    #filesList = fm.fileToSimpleList(args.f)
-    #database = args.o
     dump_path = args.f
     DatabaseManager.DATABASE = args.o
     DatabaseManager.initializeTables()
     
-    ThreadManager.logu.logInfo(message="Script avviato",fileName=ThreadManager.LOG_PATH)
-    ThreadManager.logu.logInfo(message="Categorizzo file interessanti ...",fileName=ThreadManager.LOG_PATH)
+    ThreadManager.logu.logInfo(message="Script started",fileName=ThreadManager.LOG_PATH)
 
-    getInterestingFiles(dump_path)
+    filesList = None
+    if os.path.isfile(args.f):
+        ThreadManager.logu.logInfo(message="Getting files from file list ...",fileName=ThreadManager.LOG_PATH)
+        filesList = fm.fileToSimpleList(args.f)
+    else:
+        ThreadManager.logu.logInfo(message="Getting files from folder. This may take a while ...",fileName=ThreadManager.LOG_PATH)
+        filesList = getFilesList(dump_path)
 
-    ThreadManager.logu.logInfo(message="Ottengo lista di tutti i file ...",fileName=ThreadManager.LOG_PATH)
-    filesList = getFilesList(dump_path)
 
-    msg = "Verranno analizzati {} file.".format(len(filesList))
+    ThreadManager.logu.logInfo(message="Inserting and categorizing the files in the inventory table...",fileName=ThreadManager.LOG_PATH)
+    DatabaseManager.makeInventory(filesList)
+
+    msg = "The script will analyze {} files.".format(len(filesList))
     ThreadManager.logu.logInfo(message=msg,fileName=ThreadManager.LOG_PATH)
 
-
-    
 
     # separa le immagini dal resto
     IMG_LIST, NON_IMG_LIST = typeHandler(filesList)
@@ -173,14 +155,13 @@ if __name__ == '__main__':
 
     # single threading: unisci le liste
     if args.t <= 1:
-        ThreadManager.logu.logDebug(message="Avvio script in single thread.",fileName=ThreadManager.LOG_PATH)
+        ThreadManager.logu.logDebug(message="Starting script in single thread mode.",fileName=ThreadManager.LOG_PATH)
         t = threading.Thread(target=thread_targetFunction,args=(IMG_LIST + NON_IMG_LIST, 1,))
         threadList.append(t)
     
     # multi threading
     else:
-        
-        ThreadManager.logu.logDebug(message="Avvio script con {} thread".format(str(args.t)),fileName=ThreadManager.LOG_PATH)
+        ThreadManager.logu.logDebug(message="Starting script in multi-thread mode ({} threads)".format(str(args.t)),fileName=ThreadManager.LOG_PATH)
 
         # 1 solo thread che gestisce immagini
         t = threading.Thread(target=thread_targetFunction,args=(IMG_LIST, 1,))
@@ -196,7 +177,7 @@ if __name__ == '__main__':
 
     # avvio thread
     startTime = time.time()
-    msg = "Avvio thread ({})".format(tsu.getTimeStamp_iso8601())
+    msg = "Starting thread ({})".format(tsu.getTimeStamp_iso8601())
     ThreadManager.logu.logInfo(msg,fileName=ThreadManager.LOG_PATH)
 
     # avvio thread performance
@@ -218,7 +199,7 @@ if __name__ == '__main__':
 
     endTime = time.time()
     totalTime = str(timedelta(seconds=int(endTime - startTime)))
-    msg = "Operazione completata ({}). Tempo impiegato: {}".format(tsu.getTimeStamp_iso8601(),totalTime)
+    msg = "Job done ({}). Time taken: {}".format(tsu.getTimeStamp_iso8601(),totalTime)
 
 
     if PRINT_PERFORMANCE:

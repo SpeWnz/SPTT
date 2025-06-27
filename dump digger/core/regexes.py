@@ -19,11 +19,8 @@ SC5: something followed by " and :
 
 regexes = {
 
-    # hashes 
-    "LDB-hashes":r"\$6\$.{103}",
+    # basic stuff
     "Base64 strings >=10":r"[-A-Za-z0-9+/]{10,}={0,3}",
-
-    # emails
     "Email":r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',    
 
     # tokens
@@ -41,7 +38,6 @@ regexes = {
     "SlackWebhook":r"https://hooks[.]slack[.]com/services/T[a-zA-Z0-9_]{8}/B[a-zA-Z0-9_]{8}/[a-zA-Z0-9_]{24}",
     "Google-GCP-ServiceAccount1":r"\"type\": \"service_account\"",
     "TwilioApiKey":r"SK[a-z0-9]{32}",
-    "PasswordInURL":r"[a-zA-Z]{3,10}://[^/\\s:@]{3,20}:[^/\\s:@]{3,20}@.{1,100}[\"'\\s]",
     "Amazon-MWS-AuthToken":r"(amzn\\.mws\\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
     "FacebookAccessToken":r'(EAACEdEose0cBA[0-9A-Za-z]+)',
     "GoogleApiKey":r'(AIza[0-9A-Za-z\\-_]{35})',
@@ -92,5 +88,9 @@ regexes = {
 
     # common hash types
     "MD5 hash":r"[a-f0-9]{32}",
-    "SHA1 hash":r"[a-f0-9]{40}"
+    "SHA1 hash":r"[a-f0-9]{40}",
+    "LDB-hashes":r"\$6\$.{103}",
+    "hashcat 500":r"\$1\$.{8}\$.{22}",
+    "hashcat 1800":r"\$6\$.{8}\$.{86}",
+    "hashcat 9300":r"\$9\$.{14}$.{20,43}"
 }

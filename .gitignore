@@ -5,3 +5,5 @@ basic-auth/logs/*
 basic-auth/cache/*
 databases/logs/*
 databases/cache/*
+ssh spray/logs/*
+ssh spray/cache/*

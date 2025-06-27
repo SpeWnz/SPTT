@@ -13,6 +13,7 @@ REQUIRED_ARGUMENTS.add_argument('-d',metavar='"DB"',type=str,required=True,help=
 REQUIRED_ARGUMENTS.add_argument('-o',metavar='"OUTPUT"',type=str,required=True,help='Output file')
 
 # Optional arguments
+OPTIONAL_ARGUMENTS.add_argument('-f',action="store_true",help="Also include filtered ports")
 OPTIONAL_ARGUMENTS.add_argument('--debug',action="store_true",help="Debug mode")
 
 args = parser.parse_args()
@@ -26,18 +27,30 @@ if __name__ == '__main__':
     conn = sqlite3.connect(args.d)
     cursor = conn.cursor()
 
-    hosts_wPorts = cursor.execute('''
+    portState = None
+
+    if args.f != None:
+        portState = '!= "closed"'
+    else:
+        portState = '= "open"'
+
+    hosts_wPorts = cursor.execute(f'''
     SELECT DISTINCT h.ip AS host, 
         GROUP_CONCAT(p.port, ',') AS open_ports
     FROM hosts h
     JOIN ports p ON h.id = p.host_id
-    WHERE p.state = 'open'
+    WHERE p.state {portState}
     GROUP BY h.id;
     ''').fetchall()
 
     lines = []
     for h in hosts_wPorts:
-        output = f"nmap -vvv -sC -sV -n -Pn --open --max-retries 3 -p {h[1]} -oA {h[0]}_sC-sV-openports {h[0]}"
+
+        _host              = h[0]
+        _concatenatedPorts = h[1]
+
+        # if you have a different nmap template to use, change it here
+        output = f"nmap -vvv -sC -sV -n -Pn --open --max-retries 3 -p {_concatenatedPorts} -oA {_host}_sC-sV-openports {_host}"
         lines.append(output)
     
 

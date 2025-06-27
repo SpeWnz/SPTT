@@ -32,16 +32,16 @@ np.DEBUG = True
 
 # ottiene estensione da un path
 def getExtension(threadID: int, path: str):
-    ThreadManager.threadMessage_debug(threadID,"Ottengo estensione per il file " + path)
+    ThreadManager.threadMessage_debug(threadID,"Obtaining extension for the file " + path)
     _, extension = os.path.splitext(path)
-    ThreadManager.threadMessage_debug(threadID,"Estensione ottenuta per  " + path)
+    ThreadManager.threadMessage_debug(threadID,"Got extension for the file  " + path)
 
     return extension
 
 # (caso speciale) gestisci excel a parte con openpyxl per prevenire l'eccezione
 def parseTextFromExcel(threadID: int, path: str,extension:str):
     
-    ThreadManager.threadMessage_debug(threadID,"Estraggo testo da " + path)
+    ThreadManager.threadMessage_debug(threadID,"Extracting text from " + path)
 
     dict_of_dataframes = None
     
@@ -76,11 +76,11 @@ def parseTextFromFile(threadID: int,path: str):
     # l'estensione ricade in una delle supportate?
     if ext[1:] in TEXTRACT_SUPPORTED_EXTENSIONS:    
 
-        ThreadManager.threadMessage_debug(threadID,"Estraggo testo da " + path)
+        ThreadManager.threadMessage_debug(threadID,"Extracting text from " + path)
         text = textract.process(path).decode('utf-8')
         #print(text)
     else:
-        ThreadManager.threadMessage_debug(threadID,"Nessun estensione supportata. Leggo con in maniera grezza con strings " + path)
+        ThreadManager.threadMessage_debug(threadID,"The extension does not have a supported parser. Using linux \"strings\" " + path)
         _stdout, _stderr = osu.commandResult(["strings",path])
         text = _stdout
     
@@ -92,7 +92,7 @@ def parseTextFromFile(threadID: int,path: str):
 # esempio:
 # file1.txt contiene ["password","hash","passwd"]
 def getWordsMatches(threadID: int, textContent: str,path: str):
-    ThreadManager.threadMessage_debug(threadID,"Controllo match in wordlist per il file " + path)
+    ThreadManager.threadMessage_debug(threadID,"Checking wordlist matches for the file " + path)
     
     outputMatches = []
 
@@ -109,7 +109,7 @@ def getWordsMatches(threadID: int, textContent: str,path: str):
 # esempio:
 # file1.txt contiene: [("Kubernetes Token","abcdef.123123123"),("Google Oauth","asdasdasd.213123123")]
 def getRegexMatches(threadID: int, textContent: str, path: str):
-    ThreadManager.threadMessage_debug(threadID,"Controllo match in regex per il file " + path)
+    ThreadManager.threadMessage_debug(threadID,"Checking regex matches for the file " + path)
     outputMatches = []
     
     for key in REGEXES:
@@ -124,19 +124,6 @@ def getRegexMatches(threadID: int, textContent: str, path: str):
 
     return outputMatches
 
-# crea il csv di output se non esiste
-def checkCSVExists():
-    global OUTPUT_CSV_NAME
-    global USE_CSV_HEADERS
-    
-    if (os.path.exists(OUTPUT_CSV_NAME)):
-        USE_CSV_HEADERS = False
-        return
-    
-    USE_CSV_HEADERS = True
-    return
-
-
 
 # prende in input il path del file e fa le analisi
 # return true ---> almeno 1 risultato
@@ -145,12 +132,12 @@ def analyzeFile(threadID: str, path: str):
     global WORDLIST_MATCHES
     global REGEX_MATCHES
     
-    ThreadManager.threadMessage_debug(threadID,"Sto analizzando il file " + path)
+    ThreadManager.threadMessage_debug(threadID,"Analyzing the file " + path)
     
     try:
         content = parseTextFromFile(threadID,path)
     except textract.exceptions.ExtensionNotSupported:
-        ThreadManager.threadMessage_error(threadID,"Eccezione: estensione non supportata da textract. File:" + path)
+        ThreadManager.threadMessage_error(threadID,"Exception: the extension is not supported by textract. File:" + path)
         return
 
 
@@ -171,13 +158,13 @@ def analyzeFile(threadID: str, path: str):
         totalMatchesCount += len(rm)
 
     
-    ThreadManager.threadMessage_debug(threadID,"Analisi completata per il file " + path)
+    ThreadManager.threadMessage_debug(threadID,"Analysis complete for the file " + path)
     if totalMatchesCount >= 1:
         extension = getExtension(threadID, path)
 
         # INSERIMENTO RISULTATI 
         ThreadManager.GLOBAL_MATCHES_LOCK.acquire()
-        ThreadManager.threadMessage_debug(threadID,"Aggiungo risultati alle liste globali")
+        ThreadManager.threadMessage_debug(threadID,"Adding results to the global lists")
         WORDLIST_MATCHES.append((path,extension,wm))
         REGEX_MATCHES.append((path,extension,rm))
 
@@ -191,7 +178,13 @@ def analyzeFile(threadID: str, path: str):
 
             ThreadManager.threadMessage_info(threadID,"In-memory lists are full. Dumping to db...")
 
-            DatabaseManager.insertMatches(WORDLIST_MATCHES,REGEX_MATCHES)
+            e1, e2 = DatabaseManager.insertMatches(WORDLIST_MATCHES,REGEX_MATCHES)
+
+            if e1 != None:
+                ThreadManager.threadMessage_error(threadID,f"The following wordlist matches insert caused an 'sqlite3 operational error - incomplete input' exception: {e1}")
+
+            if e2 != None:
+                ThreadManager.threadMessage_error(threadID,f"The following regex matches insert caused an 'sqlite3 operational error - incomplete input' exception: {e2}")
 
             WORDLIST_MATCHES = []
             REGEX_MATCHES = []
@@ -202,7 +195,7 @@ def analyzeFile(threadID: str, path: str):
 
         return
     else:
-        ThreadManager.threadMessage_debug(threadID,"Non ci sono risultati per il file " + path)
+        ThreadManager.threadMessage_debug(threadID,"No results found for the file " + path)
         return
 
 

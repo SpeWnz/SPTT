@@ -99,3 +99,14 @@ from hosts join ports on hosts.id = ports.host_id
 where hosts.ip = "10.20.30.40"
 and ports.state = "open"
 ```
+
+### List all hosts with that specific service
+
+```
+select DISTINCT hosts.ip, hosts.hostname, hosts.target_group, ports.port, ports.service_name
+from hosts, ports
+where hosts.id = ports.host_id
+and (lower(ports.service_name) like "%something%" lower(ports.service_info) like "%something%")
+and ports.state = "open"
+order by hosts.target_group
+```

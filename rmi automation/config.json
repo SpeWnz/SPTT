@@ -1,6 +1,7 @@
 {
     "our-ip":"OUR IP HERE",
     "our-port":"OUR PORT HERE",
+    "netcat-listen-port":"OUR NC LISTEN PORT HERE",
     "rmg-executable-location":"RMG JAR PATH HERE",
     "java-executables":[
         "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
