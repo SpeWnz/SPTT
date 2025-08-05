@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
+import ZHOR_Modules.timestampsUtils as tsu
 
 app = Flask(__name__)
 
@@ -12,6 +13,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def index():
     return render_template('upload.html')
 
+# upload via gui
 @app.route('/', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -29,5 +31,22 @@ def upload_file():
 
     return "Invalid file format. Please try again."
 
+# upload via curl post
+# curl -X POST --data-binary "@filename.txt" http://127.0.0.1:7654/curl
+@app.route('/curl', methods=['POST'])
+def receive_file():
+    file_data = request.get_data()  # or request.data
+
+    file_name = None
+    if 'File-Name' in request.headers:
+        file_name = request.headers['File-Name']
+    else:
+        file_name = tsu.getTimeStamp_iso8601()
+
+    with open(f'uploads/{file_name}', 'wb') as f:
+        f.write(file_data)
+
+    return 'File received successfully', 200
+        
 if __name__ == '__main__':
     app.run(debug=True,host="0.0.0.0",port=7654)
