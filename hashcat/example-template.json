@@ -1,0 +1,16 @@
+[
+    {
+        "mode":0,
+        "wordlist":"/usr/share/wordlist/rockyou.txt",
+        "rules":[]
+    },
+    {
+        "mode":0,
+        "wordlist":"/usr/share/wordlist/rockyou.txt",
+        "rules":["/usr/share/hashcat/rules/best64.rule"]
+    },
+    {
+        "mode":3,
+        "parameters":"?d?d?d?d?d?d?d?d"
+    }
+]

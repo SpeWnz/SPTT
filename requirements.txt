@@ -11,3 +11,6 @@ pyzbar
 pypng
 pyqrcode
 image
+flask
+flask_cors
+impacket
