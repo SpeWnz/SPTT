@@ -115,3 +115,57 @@ function getHREFLinks()
 
     return hrefList;
 }
+
+// string to base64
+function toBase64Unicode(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+// used by gumpGlobals()
+function removeCircularReferences(obj) {
+  const seen = new Set();
+
+  // Custom replacer function to handle circular references
+  return JSON.stringify(obj, (key, value) => {
+    if (value && typeof value === 'object') {
+      if (seen.has(value)) {
+        return '[Circular]';  // Replace circular reference with a placeholder
+      }
+      seen.add(value);  // Track the object we've already seen
+    }
+    return value;
+  });
+}
+
+
+
+function dumpGlobals(){
+  const url = `http://${SERVER}:${PORT}/dumpGlobals`;
+
+  GLOBALS = toBase64Unicode(removeCircularReferences(globalThis))
+
+  // Data to be sent in the POST request
+  const postData = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({"data":GLOBALS}),
+    mode: 'cors',
+  };
+
+  // Perform the fetch
+  fetch(url, postData)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.text()
+    })
+    .then(data => {
+      console.log('POST request successful:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}

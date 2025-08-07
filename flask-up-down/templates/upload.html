@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
+    <title>Flask-Up-Down</title>
 </head>
 <body>
-    <h1>Upload a File</h1>
+    <h1>Flask-Up-Down</h1>
+    <p>A simple utility for uploading and downloading stuff.</p>
+    <br>
+    <hr>
     <form action="/" method="POST" enctype="multipart/form-data">
         <label for="file">Choose a file:</label>
         <input type="file" name="file" id="file" required>
         <br><br>
         <input type="submit" value="Upload">
     </form>
+    <br>
+    <hr>
+    <p>If you're looking for the downloads, go <a href="/dl">here</a></p>
 </body>
 </html>

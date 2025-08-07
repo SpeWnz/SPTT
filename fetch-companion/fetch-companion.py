@@ -7,7 +7,7 @@ very useful in situations like the following:
 
 '''
 
-from flask import Flask, jsonify, send_file, request, make_response,render_template
+from flask import Flask, jsonify, send_file, request, make_response,render_template, Response
 from flask_cors import CORS, cross_origin
 import pandas
 import json
@@ -18,20 +18,53 @@ import ZHOR_Modules.fileManager as fm
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# used for dorkFiles.js
-@app.route('/dorkFiles', methods=['POST'])
-def dorkFiles():
-    data = request.get_json()
-    
-    fm.listToFile(data['data'],"dorkfiles.txt",'a')    
+@app.route('/dumpGlobals', methods=['POST','OPTIONS'])
+def dumpGlobals():
+
+    if request.method == 'OPTIONS':
+        response = Response()
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.status_code = 200
+        return response
+
+    data = request.get_json()    
+    fm.listToFile(data['data'],"dumpedGlobals.txt",'a')    
     
     return "OK"
 
+
 # used for dorkFiles.js
-@app.route('/dorkHREFs', methods=['POST'])
-def dorkHREFs():
-    data = request.get_json()
+@app.route('/dorkFiles', methods=['POST','OPTIONS'])
+def dorkFiles():    
+
+    if request.method == 'OPTIONS':
+        response = Response()
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.status_code = 200
+        return response
     
+
+    data = request.get_json()
+    fm.listToFile(data['data'],"dorkfiles.txt",'a')    
+    return "OK"
+
+# used for dorkFiles.js
+@app.route('/dorkHREFs', methods=['POST','OPTIONS'])
+def dorkHREFs():
+
+    if request.method == 'OPTIONS':
+        response = Response()
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.status_code = 200
+        return response
+
+    data = request.get_json()    
     fm.listToFile(data['data'],"dorkHREFs.txt",'a')    
     
     return "OK"
@@ -44,19 +77,18 @@ script.src = 'http://127.0.0.1:8081/script';
 document.head.appendChild(script);
 '''
 
-@app.route('/script', methods=['GET'])
+@app.route('/script', methods=['GET','OPTIONS'])
 def getScript():
+
+    if request.method == 'OPTIONS':
+        response = Response()
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.status_code = 200
+        return response
+
     return send_file('fetch-companion.js',as_attachment=True)
-
-
-# method used by clients to submit their performance
-@app.route('/endpoint', methods=['POST'])
-def endpoint():
-    return "OK!"
-
-
-
-
 
 
 # Run the Flask app
