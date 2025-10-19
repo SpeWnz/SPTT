@@ -8,7 +8,7 @@ git clone https://github.com/deanmalmgren/textract
 sudo cp -r textract/textract /usr/lib/python3/dist-packages/textract
 rm -rf textract
 
-cat requirements.txt | xargs -I {} pip3 install {} --break-system-packages --no-cache
+cat requirements.txt | xargs -I {} pip3 install {} --break-system-packages --no-cache --root-user-action=ignore
 cat requirements.txt | xargs -I {} pip install {} --break-system-packages --no-cache
 
 

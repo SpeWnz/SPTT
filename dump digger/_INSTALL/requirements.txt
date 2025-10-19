@@ -3,8 +3,8 @@ pypdf
 python-docx
 argparse
 openpyxl
+pandas
 
-# textract stuff 
 argcomplete~=1.10.0
 beautifulsoup4~=4.8.0
 chardet==3.*

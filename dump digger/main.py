@@ -25,7 +25,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
-__VERSION = "250625"
+__VERSION = "191025"
 
 parser = argparse.ArgumentParser(description="Dump Digger - dig for sensitive info in a dump - v" + __VERSION)
 REQUIRED_ARGUMENTS = parser.add_argument_group("Required Arguments")
@@ -38,9 +38,6 @@ REQUIRED_ARGUMENTS.add_argument('-o',metavar='"OUTPUT"',type=str,required=True,h
 
 
 # Argomenti opzionali
-#OPTIONAL_ARGUMENTS.add_argument('-x',metavar='"VALORE OPZIONALE"',type=str,help="Descrizione del primo valore opzionale")
-#OPTIONAL_ARGUMENTS.add_argument('--qualcosa',action="store_true",help="Descrizione del primo flag opzionale")
-#OPTIONAL_ARGUMENTS.add_argument('--qualcosAltro',action="store_true",help="Descrizione del secondo flag opzionale")
 OPTIONAL_ARGUMENTS.add_argument('--debug',action="store_true",help="Debug mode")
 OPTIONAL_ARGUMENTS.add_argument('--noperf',action="store_true",help="No performance")
 
@@ -122,6 +119,13 @@ def getFilesList(dump_path: str):
 # ====================================================================================================================================
 
 if __name__ == '__main__':
+
+    # create logs folder first, if it does not exist
+    if os.path.exists('logs'):
+        pass
+    else:
+        os.mkdir('logs')
+
 
     dump_path = args.f
     DatabaseManager.DATABASE = args.o
